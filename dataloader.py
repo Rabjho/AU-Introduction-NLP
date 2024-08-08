@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+from ast import literal_eval
 
 def loadForumData(dir: str) -> pd.DataFrame:
     """
@@ -84,3 +85,23 @@ def loadForumData(dir: str) -> pd.DataFrame:
     data.drop_duplicates(subset=['PostContent'], inplace=True)
     
     return data
+
+
+def loadEntityData(fileDir: str) -> pd.DataFrame:
+    """
+    Loads NER data and content from csv-file
+    """
+    df = pd.read_csv(fileDir)
+    df["ID"] = df["ID"].astype("int64")
+    df["Username"] = df["Username"].astype("string")
+    df["PostDate"] = pd.to_datetime(df["PostDate"], format='ISO8601')
+    df["ThreadTitle"] = df["ThreadTitle"].astype("string")
+    df["PostContent"] = df["PostContent"].astype("string")
+    df["PostNumber"] = pd.to_numeric(df["PostNumber"], errors='coerce')
+    
+    df.rename(columns={"entities": "Entities"}, inplace=True)
+    df["Entities"] = df["Entities"].str.replace("\n", ",")
+    df["Entities"] = df["Entities"].apply(literal_eval)
+    
+    return df
+    

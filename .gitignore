@@ -167,5 +167,5 @@ cython_debug/
 .assignments/
 
 # Ignore big data files
-data/hackerForums/
-data/HackerForumEntities.csv
+product/assignment4/data
+*.keras
